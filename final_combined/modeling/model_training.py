@@ -24,14 +24,14 @@ from final_combined import (  # noqa: E402
     MySimpleImputer,
     MyStandardScaler,
     evaluate_predictions,
-    load_prepared_data,
+    load_data,
 )
 
 # %%
 
 # Read prepared data
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-data = load_prepared_data(base_dir)
+data = load_data(base_dir)
 
 data.head(2)
 

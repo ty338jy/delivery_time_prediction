@@ -11,7 +11,7 @@ def load_raw_data() -> pd.DataFrame:
     return pd.read_csv("data/raw/data.csv")
 
 
-def load_prepared_data(base_dir: str) -> pd.DataFrame:
+def load_data(base_dir: str) -> pd.DataFrame:
     """
     Load prepared_data.parquet file located in data/prepared folder.
     """

@@ -1,4 +1,4 @@
-from .data import create_sample_split, load_prepared_data, load_raw_data
+from .data import create_sample_split, load_data, load_raw_data
 from .evaluation import evaluate_predictions
 from .feature_engineering import (  # noqa: E501
     MyLogTransformer,
@@ -29,7 +29,7 @@ from .visualization import (
 __all__ = [
     # Data
     "load_raw_data",
-    "load_prepared_data",
+    "load_data",
     "create_sample_split",
     # Preprocess
     "standardize_missing_values",
