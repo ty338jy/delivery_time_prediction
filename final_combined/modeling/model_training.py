@@ -30,9 +30,7 @@ from final_combined import (  # noqa: E402
 # %%
 
 # Read prepared data
-base_dir = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "../../")
-)  # noqa: E501
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 data = load_prepared_data(base_dir)
 
 data.head(2)
@@ -119,17 +117,23 @@ glm_pipeline.fit(X_train, y_train)
 glm_preds = glm_pipeline.predict(X_test)
 
 # evaluate performance for this initial model as base line
-print(
-    f"Initial GLM Gaussian R2 Score (as basline): {r2_score(y_test, glm_preds)}"  # noqa: E501
-)  # noqa: E501
-print(
-    f"Initial GLM Gaussian MSE (as basline): {mean_squared_error(y_test, glm_preds)}"  # noqa: E501
-)  # noqa: E501
+print(f"Initial GLM R2 Score (as basline): {r2_score(y_test, glm_preds)}")
+print(f"Initial GLM MSE (as basline): {mean_squared_error(y_test, glm_preds)}")
 
 # print the hyperparameters of this baseline model
 glm_model = glm_pipeline.named_steps["model"]
 print("Default Hyperparameters for GammaRegressor:")
 print(glm_model.get_params())
+
+# evaluate performance
+glm_default_results_df = evaluate_predictions(
+    df=pd.DataFrame({"actual": y_test, "predicted": glm_preds}),
+    outcome_column="actual",
+    preds_column="predicted",
+)
+
+print(f"GLM (untuned) Evaluation Summary:")
+print(glm_default_results_df)
 
 # %%
 # cross validation for GLM Gaussian
@@ -153,12 +157,8 @@ grid_search.fit(X_train, y_train)
 # get the best parameters and score
 glm_tuned_preds = grid_search.best_estimator_.predict(X_test)
 
-print(
-    f"GridSearch-Tuned GLM Gamma R2 Score: {r2_score(y_test, glm_tuned_preds)}"
-)  # noqa: E501
-print(
-    f"GridSearch-Tuned GLM Gamma MSE: {mean_squared_error(y_test, glm_tuned_preds)}"  # noqa: E501
-)
+print(f"GridSearch-Tuned GLM Gamma R2 Score: {r2_score(y_test, glm_tuned_preds)}")
+print(f"GridSearch-Tuned GLM Gamma MSE: {mean_squared_error(y_test, glm_tuned_preds)}")
 
 glm_tuned_model = grid_search.best_estimator_.named_steps["model"]
 print("Tuned Hyperparameters for GammaRegressor:")
@@ -177,7 +177,7 @@ glm_results_df = evaluate_predictions(
 )
 
 # Display evaluation results
-print("GLM (tuned) Evaluation Summary: ")
+print(f"GLM (tuned) Evaluation Summary:")
 print(glm_results_df)
 # %%
 
@@ -219,10 +219,7 @@ lgbm_categorical1_transformer = Pipeline(
 
 # impute mode + LabelEncoder
 lgbm_categorical2_transformer = Pipeline(
-    steps=[
-        ("imputer", MySimpleImputer(strategy="mode")),
-        ("encoder", OrdinalEncoder()),
-    ]  # noqa: E501
+    steps=[("imputer", MySimpleImputer(strategy="mode")), ("encoder", OrdinalEncoder())]
 )
 
 
@@ -242,10 +239,7 @@ lgbm_pipeline = Pipeline(
         (
             "model",
             LGBMRegressor(
-                objective="gamma",
-                n_estimators=1000,
-                learning_rate=0.1,
-                num_leaves=6,  # noqa: E501
+                objective="gamma", n_estimators=1000, learning_rate=0.1, num_leaves=6
             ),
         ),  # use gamma distribution for consistency with GLM
     ]
@@ -298,30 +292,18 @@ lgbm_results_df = evaluate_predictions(
 
 lgbm_results_df
 # %%
-# compare results
+# compare prediction results
 
 plt.figure(figsize=(12, 10))
+plt.scatter(glm_tuned_preds, y_test, alpha=0.6, label="GLM Predictions", color="blue")
 plt.scatter(
-    glm_tuned_preds, y_test, alpha=0.6, label="GLM Predictions", color="blue"
-)  # noqa: E501
-plt.scatter(
-    lgbm_tuned_preds,
-    y_test,
-    alpha=0.6,
-    label="LGBM Predictions",
-    color="green",  # noqa: E501
+    lgbm_tuned_preds, y_test, alpha=0.6, label="LGBM Predictions", color="green"
 )
 
 # add the diagonal line
-min_val = min(
-    np.min(y_test), np.min(glm_tuned_preds), np.min(lgbm_tuned_preds)
-)  # noqa: E501
-max_val = max(
-    np.max(y_test), np.max(glm_tuned_preds), np.max(lgbm_tuned_preds)
-)  # noqa: E501
-plt.plot(
-    [min_val, max_val], [min_val, max_val], "--r", label="Perfect Prediction"
-)  # noqa: E501
+min_val = min(np.min(y_test), np.min(glm_tuned_preds), np.min(lgbm_tuned_preds))
+max_val = max(np.max(y_test), np.max(glm_tuned_preds), np.max(lgbm_tuned_preds))
+plt.plot([min_val, max_val], [min_val, max_val], "--r", label="Perfect Prediction")
 
 plt.xlabel("Predicted Values", fontsize=12)
 plt.ylabel("Actual Values", fontsize=12)
@@ -329,6 +311,20 @@ plt.title("Predicted vs. Actual: GLM vs. LGBM", fontsize=14)
 plt.legend()
 plt.grid(alpha=0.3)
 plt.show()
+
+# %%
+
+# compare evaluation results
+glm_default_results_df.columns = ['GLM_Default']
+glm_results_df.columns = ['GLM_Tuned']
+lgbm_results_df.columns = ['LGBM_Tuned']
+combined_results_df = pd.concat(
+    [glm_default_results_df, glm_results_df, lgbm_results_df],
+    axis=1
+)
+
+
+print(combined_results_df)
 
 # %%
 
@@ -361,9 +357,7 @@ lgbm_importance = lgbm_tuned_model0.feature_importances_
 
 # feature names for LGBM
 lgbm_feature_names = (
-    lgbm_numerical_features
-    + lgbm_categorical1_features
-    + lgbm_categorical2_features  # noqa: E501
+    lgbm_numerical_features + lgbm_categorical1_features + lgbm_categorical2_features
 )
 
 lgbm_feature_importance = pd.DataFrame(
@@ -397,3 +391,5 @@ PartialDependenceDisplay.from_estimator(
 
 # Show the plot
 plt.show()
+
+# %%

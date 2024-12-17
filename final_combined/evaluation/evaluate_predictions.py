@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from sklearn.metrics import auc, r2_score
+from sklearn.metrics import auc, r2_score, mean_gamma_deviance
 
 
 def evaluate_predictions(
@@ -65,6 +65,9 @@ def evaluate_predictions(
     ordered_samples, cum_actuals = lorenz_curve(
         df[outcome_column], preds, weights
     )  # noqa: E501
+    evals["gamma_deviance"] = mean_gamma_deviance(
+        df[outcome_column], preds, sample_weight=weights
+    ) # noqa: E501
     evals["gini"] = 1 - 2 * auc(ordered_samples, cum_actuals)
 
     return pd.DataFrame(evals, index=[0]).T
