@@ -14,10 +14,6 @@ from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
 
-# Go up two levels from current working directory
-project_root = os.path.abspath(os.path.join(os.getcwd(), "../../"))
-sys.path.append(project_root)
-
 # import my own transformer
 from final_combined import (  # noqa: E402
     MyLogTransformer,
