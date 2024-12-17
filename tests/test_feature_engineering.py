@@ -9,11 +9,11 @@ from final_combined.feature_engineering.feature_engineering import (
 )
 
 
-### Test MySimpleImputer ###
+# Test
 @pytest.mark.parametrize(
     "strategy, fill_value, input_data, expected",
     [
-        ("mean", None, {"A": [4.8, 4.9, None, 5]}, [4.8, 4.9, 4.9, 5]),  # test for mean
+        ("mean", None, {"A": [4.8, 4.9, None, 5]}, [4.8, 4.9, 4.9, 5]),  # noqa: E501
         (
             "median",
             None,
@@ -26,7 +26,7 @@ from final_combined.feature_engineering.feature_engineering import (
             {"A": ["High", "High", "Low", None]},
             ["High", "High", "Low", "High"],
         ),  # test for mode
-        ("constant", 0, {"A": [1, None, 2]}, [1.0, 0, 2.0]),  # test for constant
+        ("constant", 0, {"A": [1, None, 2]}, [1.0, 0, 2.0]),  # noqa: E501
     ],
 )
 def test_my_simple_imputer(strategy, fill_value, input_data, expected):
@@ -35,7 +35,10 @@ def test_my_simple_imputer(strategy, fill_value, input_data, expected):
     myimputer.fit(df)
     transformed = myimputer.transform(df)
     pd.testing.assert_frame_equal(
-        transformed, pd.DataFrame({"A": expected}), check_exact=False, atol=1e-6
+        transformed,
+        pd.DataFrame({"A": expected}),
+        check_exact=False,
+        atol=1e-6,  # noqa: E501
     )
 
 
@@ -46,11 +49,13 @@ def test_my_simple_imputer_invalid_strategy():
 
 def test_my_simple_imputer_constant_missing_fill_value():
     with pytest.raises(ValueError, match="Constant Missing"):
-        MySimpleImputer(strategy="constant").fit(pd.DataFrame({"A": [None, 2, 3]}))
+        MySimpleImputer(strategy="constant").fit(
+            pd.DataFrame({"A": [None, 2, 3]})
+        )  # noqa: E501
 
 
-#%%
-### Tests for MyStandardScaler ###
+# %%
+# Test
 @pytest.mark.parametrize(
     "input_data, expected_mean, expected_std, expected_transformed",
     [
@@ -76,7 +81,9 @@ def test_my_standard_scaler(
     np.testing.assert_array_almost_equal(
         myscaler.mean_.values, expected_mean, decimal=6
     )
-    np.testing.assert_array_almost_equal(myscaler.std_.values, expected_std, decimal=6)
+    np.testing.assert_array_almost_equal(
+        myscaler.std_.values, expected_std, decimal=6
+    )  # noqa: E501
 
     # Transform and validate
     transformed = myscaler.transform(df)
@@ -90,7 +97,7 @@ def test_my_standard_scaler(
     )
 
 
-### Tests for MyLogTransformer ###
+# Tests for MyLogTransformer
 @pytest.mark.parametrize(
     "input_data, offset, expected",
     [
@@ -101,9 +108,17 @@ def test_my_standard_scaler(
             {"A": [np.log(1 + 1e-6), np.log(10 + 1e-6), np.log(100 + 1e-6)]},
         ),
         # Log transformation with offset
-        ({"A": [0, 1, 10]}, 1, {"A": [np.log(0 + 1), np.log(1 + 1), np.log(10 + 1)]}),
+        (
+            {"A": [0, 1, 10]},
+            1,
+            {"A": [np.log(0 + 1), np.log(1 + 1), np.log(10 + 1)]},
+        ),  # noqa: E501
         # Negative values with offset
-        ({"A": [-1, 0, 10]}, 2, {"A": [np.log(-1 + 2), np.log(0 + 2), np.log(10 + 2)]}),
+        (
+            {"A": [-1, 0, 10]},
+            2,
+            {"A": [np.log(-1 + 2), np.log(0 + 2), np.log(10 + 2)]},
+        ),  # noqa: E501
     ],
 )
 def test_my_log_transformer(input_data, offset, expected):

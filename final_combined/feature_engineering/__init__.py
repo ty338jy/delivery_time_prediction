@@ -1,4 +1,8 @@
-from .feature_engineering import MyLogTransformer, MySimpleImputer, MyStandardScaler
+from .feature_engineering import (  # noqa: E501
+    MyLogTransformer,
+    MySimpleImputer,
+    MyStandardScaler,
+)
 
 __all__ = [
     "MySimpleImputer",

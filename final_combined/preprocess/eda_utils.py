@@ -1,18 +1,19 @@
 import numpy as np
 import pandas as pd
 
+
 def standardize_missing_values(df: pd.DataFrame, placeholders=None):
     """
-    handle missing values in a given dataframe by 
+    handle missing values in a given dataframe by
     replacing other string representations of missing values with np.nan
 
     Args:
         df (pd.DataFrame): input dataframe
-        placeholders (list, optional): Additional placeholder values to consider as missing
+        placeholders (list, optional): Additional placeholder values
 
     Returns:
         pd.DataFrame: dataframe with missing values standardized to np.nan
-        dict: A dictionary where keys are column names and values are sets of replaced placeholders
+        dict: dict with keys as column and values as placeholders
     """
     # default placeholders for missing values
     default_placeholders = [
@@ -38,13 +39,16 @@ def standardize_missing_values(df: pd.DataFrame, placeholders=None):
     # dictionary to track replaced values
     replaced_values = {}
 
-    # iterate over each column to replace values and track replaced placeholders
+    # iterate to replace values and track replaced placeholders
     df_cleaned = df.copy()
     for col in df.columns:
         replaced_in_col = set()
         cleaned_col = []
         for value in df[col]:
-            if isinstance(value, str) and value.strip().lower() in all_placeholders:
+            if (
+                isinstance(value, str)
+                and value.strip().lower() in all_placeholders  # noqa: E501
+            ):  # noqa: E501
                 replaced_in_col.add(value)
                 cleaned_col.append(np.nan)
             else:
@@ -76,7 +80,9 @@ def report_missing_values(df: pd.DataFrame) -> pd.DataFrame:
             "Percentage Missing": df.isnull().mean() * 100,
         }
     )
-    missing_report = missing_report.sort_values(by="Missing Count", ascending=False)
+    missing_report = missing_report.sort_values(
+        by="Missing Count", ascending=False
+    )  # noqa: E501
 
     return missing_report.reset_index(drop=True)
 
@@ -84,12 +90,12 @@ def report_missing_values(df: pd.DataFrame) -> pd.DataFrame:
 def report_column_stats(df: pd.DataFrame) -> pd.DataFrame:
     """
     report a descriptive statistics summary of all columns in a dataframe
-    This function reports various statistics for each column in the DataFrame, including:
+    This function reports various statistics for each column including:
         - Data type
         - Unique value count
         - Missing value count and percentage
         - Mode (most frequent value)
-        - Minimum, maximum, mean, median, and standard deviation (for numeric columns)
+        - Minimum, maximum, mean, median, and standard deviation
 
 
     Args:
@@ -116,29 +122,43 @@ def report_column_stats(df: pd.DataFrame) -> pd.DataFrame:
             "Data Type": [dtype for dtype in df.dtypes],
             "UniqueCount": [df[col].nunique() for col in df.columns],
             "MissingCount": [df[col].isnull().sum() for col in df.columns],
-            "MissingPct": [df[col].isnull().mean() * 100 for col in df.columns],
+            "MissingPct": [
+                df[col].isnull().mean() * 100 for col in df.columns
+            ],  # noqa: E501
             "Mode": [
-                df[col].mode().iloc[0] if not df[col].mode().empty else None
+                df[col].mode().iloc[0]
+                if not df[col].mode().empty
+                else None  # noqa: E501
                 for col in df.columns
             ],
             "Minimum": [
-                df[col].min() if np.issubdtype(df[col].dtype, np.number) else None
+                df[col].min()
+                if np.issubdtype(df[col].dtype, np.number)
+                else None  # noqa: E501
                 for col in df.columns
             ],
             "Maximum": [
-                df[col].max() if np.issubdtype(df[col].dtype, np.number) else None
+                df[col].max()
+                if np.issubdtype(df[col].dtype, np.number)
+                else None  # noqa: E501
                 for col in df.columns
             ],
             "Mean": [
-                df[col].mean() if np.issubdtype(df[col].dtype, np.number) else None
+                df[col].mean()
+                if np.issubdtype(df[col].dtype, np.number)
+                else None  # noqa: E501
                 for col in df.columns
             ],
             "Median": [
-                df[col].median() if np.issubdtype(df[col].dtype, np.number) else None
+                df[col].median()
+                if np.issubdtype(df[col].dtype, np.number)
+                else None  # noqa: E501
                 for col in df.columns
             ],
             "Std": [
-                df[col].std() if np.issubdtype(df[col].dtype, np.number) else None
+                df[col].std()
+                if np.issubdtype(df[col].dtype, np.number)
+                else None  # noqa: E501
                 for col in df.columns
             ],
         }
@@ -146,9 +166,12 @@ def report_column_stats(df: pd.DataFrame) -> pd.DataFrame:
     return stats
 
 
-def categorical_summary(df: pd.DataFrame, feature: str, target: str) -> pd.DataFrame:
+def categorical_summary(
+    df: pd.DataFrame, feature: str, target: str
+) -> pd.DataFrame:  # noqa: E501
     """
-    compute summary statistics (median, IQR, min, max, mean) for a continuous target variable grouped by a categorical variable
+    compute summary statistics (median, IQR, min, max, mean)
+    for a continuous target variable grouped by a categorical variable
 
     Args:
         df (pd.DataFrame): input dataframe
