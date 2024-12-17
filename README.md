@@ -10,7 +10,14 @@ This project is the final combined submission for D400 and D100.
 - **environment.yml**: Conda environment configuration file.
 - **.pre-commit-config.yaml**: Pre-commit hook configuration.
 
-### 1. Set Up Conda Environment
+### Installation 
 
 conda env create -f environment.yml
+
 conda activate final
+
+pip install .
+
+pre-commit install
+
+pre-commit run --all-files
