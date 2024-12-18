@@ -1,6 +1,5 @@
 # %%
 import os
-import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,7 +14,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
 
 # import my own transformer
-from final_combined import (  # noqa: E402
+from final_combined import (
     MyLogTransformer,
     MySimpleImputer,
     MyStandardScaler,
@@ -128,7 +127,7 @@ glm_default_results_df = evaluate_predictions(
     preds_column="predicted",
 )
 
-print(f"GLM (untuned) Evaluation Summary:")
+print("GLM (untuned) Evaluation Summary: ")
 print(glm_default_results_df)
 
 # %%
@@ -153,8 +152,12 @@ grid_search.fit(X_train, y_train)
 # get the best parameters and score
 glm_tuned_preds = grid_search.best_estimator_.predict(X_test)
 
-print(f"GridSearch-Tuned GLM Gamma R2 Score: {r2_score(y_test, glm_tuned_preds)}")
-print(f"GridSearch-Tuned GLM Gamma MSE: {mean_squared_error(y_test, glm_tuned_preds)}")
+print(
+    f"GridSearch-Tuned GLM Gamma R2 Score: {r2_score(y_test, glm_tuned_preds)}"
+)  # noqa: E501
+print(
+    f"GridSearch-Tuned GLM Gamma MSE: {mean_squared_error(y_test, glm_tuned_preds)}"  # noqa: E501
+)  # noqa: E501
 
 glm_tuned_model = grid_search.best_estimator_.named_steps["model"]
 print("Tuned Hyperparameters for GammaRegressor:")
@@ -173,7 +176,7 @@ glm_results_df = evaluate_predictions(
 )
 
 # Display evaluation results
-print(f"GLM (tuned) Evaluation Summary:")
+print("GLM (tuned) Evaluation Summary: ")
 print(glm_results_df)
 # %%
 
@@ -215,7 +218,10 @@ lgbm_categorical1_transformer = Pipeline(
 
 # impute mode + LabelEncoder
 lgbm_categorical2_transformer = Pipeline(
-    steps=[("imputer", MySimpleImputer(strategy="mode")), ("encoder", OrdinalEncoder())]
+    steps=[
+        ("imputer", MySimpleImputer(strategy="mode")),
+        ("encoder", OrdinalEncoder()),
+    ]  # noqa: E501
 )
 
 
@@ -235,7 +241,10 @@ lgbm_pipeline = Pipeline(
         (
             "model",
             LGBMRegressor(
-                objective="gamma", n_estimators=1000, learning_rate=0.1, num_leaves=6
+                objective="gamma",
+                n_estimators=1000,
+                learning_rate=0.1,
+                num_leaves=6,  # noqa: E501
             ),
         ),  # use gamma distribution for consistency with GLM
     ]
@@ -291,15 +300,27 @@ lgbm_results_df
 # compare prediction results
 
 plt.figure(figsize=(12, 10))
-plt.scatter(glm_tuned_preds, y_test, alpha=0.6, label="GLM Predictions", color="blue")
 plt.scatter(
-    lgbm_tuned_preds, y_test, alpha=0.6, label="LGBM Predictions", color="green"
+    glm_tuned_preds, y_test, alpha=0.6, label="GLM Predictions", color="blue"
+)  # noqa: E501
+plt.scatter(
+    lgbm_tuned_preds,
+    y_test,
+    alpha=0.6,
+    label="LGBM Predictions",
+    color="green",  # noqa: E501
 )
 
 # add the diagonal line
-min_val = min(np.min(y_test), np.min(glm_tuned_preds), np.min(lgbm_tuned_preds))
-max_val = max(np.max(y_test), np.max(glm_tuned_preds), np.max(lgbm_tuned_preds))
-plt.plot([min_val, max_val], [min_val, max_val], "--r", label="Perfect Prediction")
+min_val = min(
+    np.min(y_test), np.min(glm_tuned_preds), np.min(lgbm_tuned_preds)
+)  # noqa: E501
+max_val = max(
+    np.max(y_test), np.max(glm_tuned_preds), np.max(lgbm_tuned_preds)
+)  # noqa: E501
+plt.plot(
+    [min_val, max_val], [min_val, max_val], "--r", label="Perfect Prediction"
+)  # noqa: E501
 
 plt.xlabel("Predicted Values", fontsize=12)
 plt.ylabel("Actual Values", fontsize=12)
@@ -311,12 +332,11 @@ plt.show()
 # %%
 
 # compare evaluation results
-glm_default_results_df.columns = ['GLM_Default']
-glm_results_df.columns = ['GLM_Tuned']
-lgbm_results_df.columns = ['LGBM_Tuned']
+glm_default_results_df.columns = ["GLM_Default"]
+glm_results_df.columns = ["GLM_Tuned"]
+lgbm_results_df.columns = ["LGBM_Tuned"]
 combined_results_df = pd.concat(
-    [glm_default_results_df, glm_results_df, lgbm_results_df],
-    axis=1
+    [glm_default_results_df, glm_results_df, lgbm_results_df], axis=1
 )
 
 
@@ -353,7 +373,9 @@ lgbm_importance = lgbm_tuned_model0.feature_importances_
 
 # feature names for LGBM
 lgbm_feature_names = (
-    lgbm_numerical_features + lgbm_categorical1_features + lgbm_categorical2_features
+    lgbm_numerical_features
+    + lgbm_categorical1_features
+    + lgbm_categorical2_features  # noqa: E501
 )
 
 lgbm_feature_importance = pd.DataFrame(

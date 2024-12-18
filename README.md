@@ -4,32 +4,33 @@ This project is the final combined submission for D400 and D100.
 
 ## Project Overview
 
-This project predicts the delivery time based on a dataset taken from Kaggle 
+This project predicts the delivery time based on a dataset taken from Kaggle
 
 https://www.kaggle.com/datasets/gauravmalik26/food-delivery-dataset/data?select=train.csv
 
-The file has been downloaded and saved under data/raw folder. 
+The file has been downloaded and saved under data/raw folder.
 
 The main purpose of the project would be to perform exploratory / expanantory analysis (in eda_cleaning.ipynb), then apply different machine learning techniques (GLM and LGBM in specific) to predict the food delivery time and compare model performance (model_training.py)
 
 ## Repository Structure
+
 ```
 FINAL_PROJECT/
 │
 ├── data/                         # Folder for dataset
-│   ├── prepared/                 
+│   ├── prepared/
 │   │   └── prepared_data.parquet # output from eda_cleaning.ipynb
 │   │
-│   └── raw/                     
+│   └── raw/
 │       └── data.csv              # raw data downloaded from Kaggle
-│   
+│
 ├── final_combined/               # folder for modularized codes
-│   ├── data/                     # scripts for data load 
-│   ├── evaluation/               # scripts for model evaluation 
+│   ├── data/                     # scripts for data load
+│   ├── evaluation/               # scripts for model evaluation
 │   ├── feature_engineering/      # script for feature engineering
 │   ├── preprocess/               # scrupt for preprocessing
-│   ├── visualization/            # script for visualisation 
-│   └── __init__.py              
+│   ├── visualization/            # script for visualisation
+│   └── __init__.py
 │
 ├── tests/                        # folder for unit tests
 │
@@ -44,8 +45,8 @@ FINAL_PROJECT/
 └── setup.cfg                     # project setup configuration
 ```
 
+## Installation
 
-## Installation 
 ```
 conda env create -f environment.yml
 
@@ -58,7 +59,9 @@ pre-commit install
 pre-commit run --all-files
 
 ```
+
 ## Usage
+
 ```
 python model_training.py
 ```
