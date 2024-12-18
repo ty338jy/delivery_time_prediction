@@ -13,6 +13,7 @@ The file has been downloaded and saved under data/raw folder.
 The main purpose of the project would be to perform exploratory / expanantory analysis (in eda_cleaning.ipynb), then apply different machine learning techniques (GLM and LGBM in specific) to predict the food delivery time and compare model performance (model_training.py)
 
 ## Repository Structure
+```
 FINAL_PROJECT/
 │
 ├── data/                         # Folder for dataset
@@ -41,10 +42,11 @@ FINAL_PROJECT/
 ├── README.md                     # documentation file
 ├── Report.pdf                    # PDF report for the project
 └── setup.cfg                     # project setup configuration
+```
 
 
-### Installation 
-
+## Installation 
+```
 conda env create -f environment.yml
 
 conda activate final
@@ -55,6 +57,8 @@ pre-commit install
 
 pre-commit run --all-files
 
-### Usage
-
+```
+## Usage
+```
 python model_training.py
+```
