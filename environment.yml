@@ -19,6 +19,7 @@ dependencies:
   - ipykernel
   # plots
   - matplotlib
+  - seaborn 
   # ml
   - glum
   - lightgbm
